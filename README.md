@@ -1,6 +1,8 @@
 # Digger 2027
 
-**▶ Play it: <https://ubershmekel.github.io/digger-2027/>**
+**▶ Play it: <https://aeven-ai.github.io/Digger/>** — this build, with the 2027 tune and full-name high scores.
+
+Upstream is [ubershmekel/digger-2027](https://github.com/ubershmekel/digger-2027); its own live page at <https://ubershmekel.github.io/digger-2027/> is the **older 2023-era build** (3-letter initials, one tune) and does not carry anything from this fork.
 
 A fan-made, modern version of the original 1983 **[Digger](https://en.wikipedia.org/wiki/Digger_(video_game))** (Windmill Software, designed by Rob Sleath), a Mr. Do! / Dig Dug-style maze game.
 
