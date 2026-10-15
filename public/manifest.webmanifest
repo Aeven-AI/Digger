@@ -1,0 +1,10 @@
+{
+  "name": "Digger 2027",
+  "short_name": "Digger",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#07060a",
+  "theme_color": "#07060a",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

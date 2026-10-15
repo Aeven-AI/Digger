@@ -1,0 +1,31 @@
+{
+  "name": "digger-2027",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --deny-warnings src tests tools public/sw.js",
+    "extract": "node tools/extract-data.mjs",
+    "share-card": "node tools/make-share-card.mjs",
+    "music": "mkdir -p tmp/music && rolldown tools/music/render-track.ts -o tmp/music/render-track.mjs --format esm --platform node && for t in 2027 breaks acid; do node tmp/music/render-track.mjs $t tmp/music/digger-$t.wav && ffmpeg -y -v error -i tmp/music/digger-$t.wav -c:a libopus -b:a 128k -application audio public/audio/digger-$t.opus; done"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "@types/three": "^0.186.0",
+    "oxlint": "^1.86.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  }
+}
