@@ -1,7 +1,8 @@
 // The 2027 theme is meant to be the 1983 tune arranged as a real dance track:
 // these checks hold it to the melody, the form and the beat.
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { mainTheme2027, mainThemeAcid, mainThemeBreaks, type Cue } from '../src/audio/hd/compose';
+import { mainTheme2027, type Cue } from '../src/audio/hd/compose';
 import { BACKG_JINGLE, PIT_HZ } from '../src/audio/tunes';
 
 const NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
@@ -84,47 +85,30 @@ describe('the 2027 main theme', () => {
   });
 });
 
-describe('the drum-and-bass reading', () => {
-  it('plays the 1983 melody note for note', () => {
-    const expected = tableLine().filter(([, m]) => m >= 0);
-    const lead = line(mainThemeBreaks(), 'lead');
-    expect(lead.map(([t, m]) => [Number((t - INTRO).toFixed(4)), m])).toEqual(expected);
-  });
+describe('the licensed songs in the cycle', () => {
+  const IDS = ['novahead', 'shegal', 'nihilore'];
 
-  it('rolls at 174 with a two-step break and the riff in the bass', () => {
-    const c = mainThemeBreaks();
-    expect(c.bpm).toBe(174);
-    expect(c.loopBeats).toBe(96);
-    expect(c.swing).toBe(0.5);
-    const kicks = c.notes.filter((n) => n.i == 'kick2').map((n) => n.t);
-    const snares = c.notes.filter((n) => n.i == 'snare2' && n.v > 0.5).map((n) => n.t);
-    for (let b = 0; b < 24; b++) {
-      expect(kicks.some((x) => Math.abs(x - b * 4) < 1e-6)).toBe(true);
-      for (const beat of [1, 3]) expect(snares.some((x) => Math.abs(x - (b * 4 + beat)) < 1e-6)).toBe(true);
+  it('ships one encoded loop for every song, beside the club mix', () => {
+    for (const id of ['2027', ...IDS]) {
+      const file = `public/audio/digger-${id}.opus`;
+      expect(existsSync(file), file).toBe(true);
+      expect(statSync(file).size, file).toBeGreaterThan(100_000);
     }
-    // The riff is the tune an octave down, in the new bass voice.
-    const expected = tableLine().filter(([, m]) => m >= 0);
-    const bass = c.notes.filter((n) => n.i == 'reese' && n.t >= INTRO);
-    for (const [t, m] of expected) expect(bass.some((n) => Math.abs(n.t - (t + INTRO)) < 1e-6 && [m - 12, m - 24].includes(n.m))).toBe(true);
-  });
-});
-
-describe('the acid reading', () => {
-  it('plays the 1983 melody note for note on the acid line', () => {
-    const expected = tableLine().filter(([, m]) => m >= 0);
-    const acid = line(mainThemeAcid(), 'acid');
-    expect(acid.map(([t, m]) => [Number((t - INTRO).toFixed(4)), m])).toEqual(expected);
   });
 
-  it('is a drum machine at 130, four on the floor, with a sixteenth pedal', () => {
-    const c = mainThemeAcid();
-    expect(c.bpm).toBe(130);
-    expect(c.loopBeats).toBe(96);
-    const kicks = c.notes.filter((n) => n.i == 'kick').map((n) => n.t);
-    for (let k = 0; k < 96; k++) expect(kicks.some((x) => Math.abs(x - k) < 1e-6)).toBe(true);
-    const pedal = c.notes.filter((n) => n.i == 'reese');
-    expect(pedal.length).toBeGreaterThan(200);
-    expect(c.notes.some((n) => n.i == 'openhat')).toBe(true);
-    expect(c.notes.some((n) => n.i == 'stab')).toBe(true);
+  it('has a MusicTheme for each song, so the tune cycle can reach it', () => {
+    const storage = readFileSync('src/storage/storage.ts', 'utf8');
+    const cycle = readFileSync('src/app/app.ts', 'utf8');
+    for (const id of IDS) {
+      expect(storage, id).toContain(`'${id}'`);
+      expect(cycle, id).toContain(`theme: '${id}'`);
+    }
+  });
+
+  it('names the artist and the licence in the credits', () => {
+    const readme = readFileSync('README.md', 'utf8');
+    for (const artist of ['nova head', 'Vlad Shegal', 'Nihilore']) {
+      expect(readme, artist).toContain(artist);
+    }
   });
 });

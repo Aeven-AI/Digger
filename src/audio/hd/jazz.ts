@@ -3,7 +3,7 @@
 import type { SoundCmd } from '../../sim/sound';
 import type { AudioBackend, AudioEngine } from '../engine';
 import { EMERALD_FREQS, PIT_HZ } from '../tunes';
-import { bonusTheme, dirge, levelDone, mainTheme, mainTheme2027, mainThemeAcid, mainThemeBreaks, type Cue, type Inst } from './compose';
+import { bonusTheme, dirge, levelDone, mainTheme, mainTheme2027, type Cue, type Inst } from './compose';
 import type { MusicTheme } from '../../storage/storage';
 import * as I from './instruments';
 
@@ -267,23 +267,27 @@ interface Playing {
 /** Tempo of the looping cues, so changes between them land on a beat. */
 const BPM: Partial<Record<CueId, number>> = { main: 168, bonus: 232 };
 /** Tempo of each reading of the main theme, so a change of tune lands on a beat. */
-const MAIN_BPM: Record<MusicTheme, number> = { '2027': 126, breaks: 174, acid: 130, jazz: 168 };
+const MAIN_BPM: Record<MusicTheme, number> = { '2027': 126, novahead: 120, shegal: 120, nihilore: 120, jazz: 168 };
 /** Beats per melody-table step in the arrangements (see compose). */
 const STEP = 0.25;
-/** The pre-rendered tracks, written by tools/music/render-track.ts. */
+/** The pre-rendered tracks, written by tools/music/render-real.ts through a soundfont. */
 /** The arrangement behind each reading, played when there is no track or it will not decode. */
+/** A licensed song has no arrangement to play when its track cannot decode, so the
+ *  fallback for those is the club reading of the tune. */
 const CUES: Record<MusicTheme, () => Cue> = {
   '2027': mainTheme2027,
-  breaks: mainThemeBreaks,
-  acid: mainThemeAcid,
+  novahead: mainTheme2027,
+  shegal: mainTheme2027,
+  nihilore: mainTheme2027,
   jazz: mainTheme,
 };
 
 /** The rendered track for a theme, where there is one. */
 const TRACKS: Partial<Record<MusicTheme, string>> = {
   '2027': './audio/digger-2027.opus',
-  breaks: './audio/digger-breaks.opus',
-  acid: './audio/digger-acid.opus',
+  novahead: './audio/digger-novahead.opus',
+  shegal: './audio/digger-shegal.opus',
+  nihilore: './audio/digger-nihilore.opus',
 };
 /** Playback trim for the track, so it matches the level of the rendered cues. */
 const TRACK_GAIN = 0.6;

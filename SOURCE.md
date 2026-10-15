@@ -9,8 +9,8 @@ the 1983 Windmill Software game *Digger* by Rob Sleath. It is the source tree �
 |---|---|
 | `src/` | The simulation, the two renderers (1983 CGA and 3D), the audio backends and the UI. |
 | `tests/` | Vitest unit tests; `tests/e2e/` holds the Playwright smoke tests. |
-| `tools/` | Build helpers, including `tools/music/`, which renders the 2027 track. |
-| `public/` | Icons, the share card, the service worker, and the rendered 2027 track. |
+| `tools/` | Build helpers. `tools/music/` renders the club mix through a soundfont and folds the licensed songs into loops. |
+| `public/` | Icons, the share card, the service worker, and the rendered tunes (`audio/`). |
 | `README.md`, `LICENSE` | Upstream documentation and licence (GPL-2.0-or-later). |
 
 A copy of this with a double-clickable `play.command`, the built site and this source
@@ -34,25 +34,23 @@ also sits in `~/Downloads/games/digger`.
   mode, Chopin's funeral march on a death, plus the level jingle. **F4** switches the
   whole soundtrack between the 2027 band and that PC-speaker emulation, and
   **Settings → Audio → Sound style** does the same thing from the menu.
-- **Four readings of the main theme.** Settings → Audio → *Main theme · Popcorn*, or
-  the pause menu's **Next tune ▸**, picks between:
-  - **2027 club** (default): a club track built on the 1983 melody, note for note, on a
-    supersaw lead, with that same line an octave down as synth bass under a four-on-the-
-    floor beat — open hats on the off-beats, snare and clap on two and four, a two-bar
-    breakdown that thins the floor out, and a riser into the second half. It is rendered
-    **offline ahead of time** into `public/audio/digger-2027.opus` (46 s, loops
-    seamlessly), because a mix like this needs far more arithmetic than a live Web Audio
-    graph can afford: band-limited oscillators, per-sample filter envelopes, layered
-    drums, a stereo room, a three-sixteenth delay throw, a low end side-chained to the
-    kick, and a limited master. The synthesis lives in `tools/music/` and reads the same
-    cue the game would otherwise play, so the two cannot drift apart. Re-render with
-    `npm run music` (needs `ffmpeg` with `libopus`). The game plays the file and falls
-    back to synthesizing that cue in the browser if the file will not decode, so a
-    browser without Opus still gets music.
-  - **2027 drum and bass**: the melody over a two-step break at 174 bpm, the riff in a
-    reese bass (`mainThemeBreaks()`).
-  - **2027 acid**: the melody as one resonant 303 line over a drum machine at 130 bpm
-    (`mainThemeAcid()`).
+- **Four tunes.** Settings → Audio → *Main theme*, or the pause menu's **Next tune ▸**,
+  picks between:
+  - **2027 club** (default): the 1983 melody, note for note, played by a General MIDI
+    soundfont — sampled kit, fingered bass, clavinet — over a four-on-the-floor beat with
+    open hats on the off-beats, a two-bar breakdown and a riser into the second half. It is
+    rendered **offline ahead of time** into `public/audio/digger-2027.opus` (46 s, loops
+    seamlessly): `tools/music/render-real.ts` writes the cue from
+    `src/audio/hd/compose.ts` to MIDI and plays it through FluidR3 Mono GM (MIT, by Frank
+    Wen and Michael Cowgill) with `fluidsynth`, then `tools/music/mix.ts` balances the
+    stems, ducks the melodic parts under each kick, adds a room and a delay throw, and
+    limits and normalises the master. Re-render with `npm run music`.
+  - **Three licensed songs**, wired in by `npm run songs`, which downloads each source,
+    folds its tail over its head for a seamless three-minute loop, matches its loudness to
+    the club mix and encodes it to Opus: *Fractured Light* by nova head (CC0 1.0),
+    *Pixel gangster Mario is drinking in Miami* by Vlad Shegal (CC BY 3.0) and *The Water
+    and the Well* by Nihilore (CC BY 4.0). The two CC BY tracks keep their credit wherever
+    the game is distributed; see README.md.
   - **1983 swing**: upstream's jazz-trio arrangement of the same melody, unchanged
     (`mainTheme()`).
 

@@ -38,7 +38,7 @@ export const DEFAULT_KEYS: Record<BindAction, string[]> = {
 /** How the remastered soundtrack plays the main tune: the 2027 band reading it
  *  straight, or the swing trio. The PC-speaker style always plays the 1983 tables. */
 /** The readings of the main theme: two rendered dance tracks, an acid take and the jazz trio. */
-export type MusicTheme = '2027' | 'breaks' | 'acid' | 'jazz';
+export type MusicTheme = '2027' | 'novahead' | 'shegal' | 'nihilore' | 'jazz';
 
 export interface Settings {
   graphics: 'hd' | 'classic';

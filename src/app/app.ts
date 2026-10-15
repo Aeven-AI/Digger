@@ -198,15 +198,16 @@ export class App {
   /** Graphics decide the direction; the sound style goes along with them. */
   /**
    * F3, N, or the pause menu's Next tune button: step through every tune the game can
-   * play — the three dance readings of the 1983 tune, the jazz trio, then the original
-   * PC-speaker tunes — and remember where it stopped.
+   * play — the club reading of the 1983 tune, the licensed songs, the jazz trio, then
+   * the original PC-speaker tunes — and remember where it stopped.
    */
   private nextTune(): void {
     const s = this.settings;
     const order: { audio: 'hd' | 'classic'; theme?: MusicTheme; label: string }[] = [
       { audio: 'hd', theme: '2027', label: '♪ Digger 2027: club mix' },
-      { audio: 'hd', theme: 'breaks', label: '♪ Digger 2027: drum and bass' },
-      { audio: 'hd', theme: 'acid', label: '♪ Digger 2027: acid' },
+      { audio: 'hd', theme: 'novahead', label: '♪ nova head: Fractured Light' },
+      { audio: 'hd', theme: 'shegal', label: '♪ Vlad Shegal: Pixel gangster' },
+      { audio: 'hd', theme: 'nihilore', label: '♪ Nihilore: The Water and the Well' },
       { audio: 'hd', theme: 'jazz', label: '♪ Popcorn: 1983 swing' },
       { audio: 'classic', label: '♪ Sound: 1983 PC speaker, original tunes' },
     ];

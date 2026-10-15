@@ -159,26 +159,42 @@ Composed as code, and synthesized: no samples ship with the game.
 - **Instruments:** FM electric piano, vibraphone, upright bass, muted trumpet, strings, piano, and a drum kit (ride, hi-hat, brushes, snare, kick). All are synthesized with Web Audio (`src/audio/hd/instruments.ts`).
 ### The 2027 tracks
 
-The 2027 theme is not synthesized in the browser. `npm run music` renders three readings
-of the 1983 tune offline into `public/audio/`, each one the melody note for note with its
-own bass line and beat:
+The 2027 tune is not synthesized in the browser. `npm run music` renders the club reading
+of the 1983 melody offline into `public/audio/`, note for note, and `npm run songs` adds
+three licensed songs beside it:
 
-| Track | Tempo | What it is |
-|---|---|---|
-| `digger-2027.opus` | 126 | Club mix: supersaw lead, the riff an octave down, four on the floor, open hats on the off-beats, a breakdown and a riser. |
-| `digger-breaks.opus` | 174 | Drum and bass: the tune over a two-step break with ghost snares, the riff in a reese bass. |
-| `digger-acid.opus` | 130 | Acid: the melody as one squelchy 303 line, root pedal underneath, drum machine on the floor. |
+| Track | What it is |
+|---|---|
+| `digger-2027.opus` | Club mix at 126 bpm: four on the floor, open hats on the off-beats, the tune on a saw lead with the riff an octave below, a breakdown and a riser. |
+| `digger-novahead.opus` | *Fractured Light* — nova head. A three-minute loop. |
+| `digger-shegal.opus` | *Pixel gangster Mario is drinking in Miami* — Vlad Shegal. A three-minute loop. |
+| `digger-nihilore.opus` | *The Water and the Well* — Nihilore. A three-minute loop. |
 
-`tools/music/` does the synthesis itself: band-limited oscillators, per-sample filter
-envelopes, layered drums, a room, a three-sixteenth delay throw, a low end side-chained
-to the kick, and a limited master. Offline there is no realtime budget, which is the
-whole point. The game plays those files, and falls back to synthesizing the same cue in
-the browser if a file will not decode, so browsers without Opus still get music.
+`tools/music/` does the work offline, where there is no realtime budget:
+
+- **`render-real.ts`** turns the cue from `src/audio/hd/compose.ts` into MIDI and plays it
+  through **FluidR3 Mono GM**, an MIT-licensed General MIDI soundfont (Frank Wen, Michael
+  Cowgill), so the club mix is played by a sampled drum kit, a fingered bass and a clavinet
+  rather than oscillators. `fluidsynth` renders one stem per group.
+- **`mix.ts`** balances the four stems, ducks the melodic ones under each kick, adds a room
+  and a three-sixteenth delay throw, and masters the result to a limited, normalised loop.
+- **`songs.ts`** downloads each licensed song, folds its tail back over its head so the
+  loop has no seam, matches its loudness to the club mix and encodes it.
+
+The game plays those files, and falls back to synthesizing the club cue in the browser if a
+file will not decode, so browsers without Opus still get music.
+
+**Song credits, and what each licence asks for.** *Fractured Light* by nova head is CC0 1.0
+— a public domain dedication, no conditions. *Pixel gangster Mario is drinking in Miami* by
+Vlad Shegal and *The Water and the Well* by Nihilore are CC BY (3.0 and 4.0): keep the
+credit wherever the game is distributed, which is what this section and
+`tools/music/songs.ts` are for. Sources: the `nova-head-fractured-light`, `fsr017` and
+`nihilore-broken-parts` items on the Internet Archive.
 
 - **Rendering:** each cue is bounced when the game starts. Every distinct sound (instrument, pitch, rounded length and velocity) is synthesized once in an `OfflineAudioContext`. The notes are then mixed in plain JS, and reverb and mastering run in a single pass. That's about a tenth as many synthesized voices as notes. Looping cues get their reverb tail folded back onto the start, so the loop is seamless. The first jazz game waits for the main theme behind a progress bar, or you can skip ahead and let the music join later.
 - **Effects** are synthesized live and follow the original's pitch contours. Emerald pickups climb the original C-major scale on vibes. A falling bag gets a dropping whistle and a wobbling bag creaks. Gold goes "cha-ching". Eating monsters gulps higher with each bite. Death is a sad muted trombone.
 
-> **Decision:** the main theme is *Popcorn* (Gershon Kingsley, 1969), in a jazz arrangement, as in every Digger version. The bonus theme (Rossini) and the dirge (Chopin) are public domain. *Popcorn* is still under copyright, and an arrangement doesn't change that. That's fine for a free fan project, but it would need revisiting before any commercial release.
+> **Decision:** the main theme is *Popcorn* (Gershon Kingsley, 1969), in a jazz arrangement, as in every Digger version. The bonus theme (Rossini) and the dirge (Chopin) are public domain. *Popcorn* is still under copyright, and an arrangement doesn't change that. That's fine for a free fan project, but it would need revisiting before any commercial release. The three licensed songs are CC0 and CC BY, so they ship as they are, with the credits above.
 
 ## 6. Classic mode
 

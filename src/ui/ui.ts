@@ -452,8 +452,9 @@ export class Ui {
           <div class="row-label">Main theme · Popcorn <kbd>N</kbd></div>
           ${seg('musicTheme', [
             ['2027', 'Club'],
-            ['breaks', 'Drum & bass'],
-            ['acid', 'Acid'],
+            ['novahead', 'nova head'],
+            ['shegal', 'Shegal'],
+            ['nihilore', 'Nihilore'],
             ['jazz', '1983 swing'],
           ])}
           <div class="row-label">Mute</div>

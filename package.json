@@ -14,7 +14,8 @@
     "lint": "oxlint --deny-warnings src tests tools public/sw.js",
     "extract": "node tools/extract-data.mjs",
     "share-card": "node tools/make-share-card.mjs",
-    "music": "mkdir -p tmp/music && rolldown tools/music/render-track.ts -o tmp/music/render-track.mjs --format esm --platform node && for t in 2027 breaks acid; do node tmp/music/render-track.mjs $t tmp/music/digger-$t.wav && ffmpeg -y -v error -i tmp/music/digger-$t.wav -c:a libopus -b:a 128k -application audio public/audio/digger-$t.opus; done"
+    "music": "mkdir -p tmp/music && rolldown tools/music/render-real.ts -o tmp/music/render-real.mjs --format esm --platform node && node tmp/music/render-real.mjs 2027 tmp/music/digger-2027.wav && ffmpeg -y -v error -i tmp/music/digger-2027.wav -c:a libopus -b:a 128k -application audio public/audio/digger-2027.opus",
+    "songs": "mkdir -p tmp/music && rolldown tools/music/songs.ts -o tmp/music/songs.mjs --format esm --platform node && node tmp/music/songs.mjs"
   },
   "dependencies": {
     "three": "^0.186.1"
